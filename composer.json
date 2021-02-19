@@ -1,0 +1,17 @@
+{
+    "name": "imfranq/laravel-resource",
+    "description": "Create easy cruds in Laravel PHP Framework.",
+    "authors": [
+        {
+            "name": "Franklin Gil",
+            "email": "imfranq.ve@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "tests\\": "tests/",
+            "ImFranq\\LaravelResource\\": "src"
+        }
+    },
+    "require": {}
+}
