@@ -16,9 +16,11 @@ trait EditResource
      */
     public function edit($id)
     {
+        if( $this->checkEditModelRequest() ) return abort(404);
+
         return $this->renderView(
             $this->moduleName != null ? Str::plural($this->moduleName) . '.edit' : 'edit' ,
-            $this->editData($id)
+            $this->editResponse($id)
         );
     }
 
@@ -28,10 +30,30 @@ trait EditResource
      * @param  int  $id
      * @return Array
      */
-    public function editData($id)
+    public function editResponse($id)
     {
         return [
-            Str::singular($this->moduleName) => $this->eloquentModel::find($id)
+            Str::singular($this->moduleName) => $this->editModelQueryResponse($id)
         ];
+    }
+
+    /**
+     * Define query response to index method
+     * 
+     * @param  int  $id
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function editModelQueryResponse($id){
+        return $this->eloquentModel::find($id);
+    }
+
+    /**
+     * Validate if the model can be edited
+     * 
+     * @param  int  $id
+     * @return boolean
+     */
+    public function checkEditModelRequest($id) {
+        return $this->eloquentModel::find($id) == null;
     }
 }

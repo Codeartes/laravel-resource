@@ -14,10 +14,12 @@ trait IndexResource
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {
+    {   
+        if(request()->expectsJson()) return response()->json($this->indexModelQueryResponse());
+
         return $this->renderView(
             $this->moduleName != null ? Str::plural($this->moduleName) . '.index' : 'index' ,
-            $this->indexData()
+            $this->indexResponse()
         );
     }
 
@@ -26,13 +28,22 @@ trait IndexResource
      * 
      * @return Array
      */
-    public function indexData()
+    public function indexResponse()
     {
         $data = [];
         
         if( $this->moduleName != null ) 
-            $data[Str::plural($this->moduleName)] = $this->eloquentModel::get();
+            $data[Str::plural($this->moduleName)] = $this->indexModelQueryResponse();
 
         return $data;
+    }
+
+    /**
+     * Define query response to show method
+     * 
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function indexModelQueryResponse(){
+        return $this->eloquentModel::get();
     }
 }

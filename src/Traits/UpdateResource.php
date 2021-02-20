@@ -12,14 +12,19 @@ trait UpdateResource
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $user)
+    public function update(Request $request, $id)
     {
-        $resource = $this->eloquentModel::find($user);
-        if($resource == null) return abort(404);
+        if($this->checkDestroyModelRequest($id)) return abort(404);
+
+        $resource = $this->eloquentModel::find($id);
         $data = $request->only($this->resourceFields);
 
-        $this->updateResource($resource, $this->removeNulls($data), $request);
-        return $this->redirectOnUpdate($request);
+        if( $this->updateResource($resource, $this->removeNulls($data), $request) ){
+            if(request()->expectsJson()) return response()->json(['message' => 'Resoruce updated']);
+            return $this->redirectOnUpdate($request);
+        }
+
+        return abort(500, 'An error has occurred');
     }
 
     /**
@@ -48,5 +53,25 @@ trait UpdateResource
         return collect($data)->filter(function($value, $key)   {
             return $value != null;
         })->all();
+    }
+
+    /**
+     * Define query to update method
+     * 
+     * @param  int  $id
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    public function updateModelQuery($id){
+        return $this->eloquentModel::find($id);
+    }
+
+    /**
+     * Validate if the model can be updated
+     * 
+     * @param  int  $id
+     * @return boolean
+     */
+    public function checkUpdateModelRequest($id) {
+        return $this->eloquentModel::find($id) == null;
     }
 }

@@ -17,7 +17,7 @@ trait CreateResource
     {
         return $this->renderView(
             $this->moduleName != null ? Str::plural($this->moduleName) . '.create' : 'create' ,
-            $this->createData()
+            $this->createResponse()
         );
     }
 
@@ -26,7 +26,7 @@ trait CreateResource
      * 
      * @return Array
      */
-    public function createData()
+    public function createResponse()
     {
         return [];
     }
