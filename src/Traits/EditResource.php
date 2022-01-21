@@ -16,7 +16,7 @@ trait EditResource
      */
     public function edit($id)
     {
-        if( $this->checkEditModelRequest() ) return abort(404);
+        if( $this->checkEditModelRequest($id) ) return abort(404);
 
         return $this->renderView(
             $this->moduleName != null ? Str::plural($this->moduleName) . '.edit' : 'edit' ,
