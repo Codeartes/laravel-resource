@@ -16,7 +16,7 @@ trait ShowResource
      */
     public function show($id)
     {   
-        if( $this->checkShowModelRequest() ) return abort(404, "Resource not found");
+        if( $this->checkShowModelRequest($id) ) return abort(404, "Resource not found");
 
         if(request()->expectsJson()) return response()->json($this->showModelQueryResponse($id));
 
