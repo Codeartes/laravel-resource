@@ -15,10 +15,12 @@ trait StoreResource
      */
     public function store(Request $request)
     {
-        $data = $request->only($this->resourceFields, $request);
+        $fields = app( $this->eloquentModel)->getFillable();
+        $data = $request->only($fields, $request);
         $resource = $this->storeResourceQuery($data, $request);
 
-        if(request()->expectsJson()) return response()->json( $this->storeResponse($resource) );
+        if(request()->expectsJson() || $this->onlyJsonResponse) 
+            return response()->json( $this->storeResponse($request, $resource) );
 
         return $this->redirectOnStore($request);
     }
@@ -28,7 +30,7 @@ trait StoreResource
      * @param  \Illuminate\Http\Request  $request
      * @return Boolean
      */
-    public function storeResourceQuery($data, Request $request){
+    private function storeResourceQuery($data, Request $request){
         return $this->eloquentModel::create($data);
     }
 
@@ -36,17 +38,18 @@ trait StoreResource
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function redirectOnStore(Request $request){
+    private function redirectOnStore(Request $request){
         return redirect()->to( $this->redirectTo );
     }
 
     /**
      * Define query response to store method
      * 
+     * @param  \Illuminate\Http\Request  $request
      * @param Illuminate\Database\Eloquent\Model $resource
      * @return Illuminate\Database\Eloquent\Model
      */
-    public function storeResponse($resource){
+    private function storeResponse(Request $request, $resource){
         return $resource;
     }
 }

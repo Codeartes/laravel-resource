@@ -30,7 +30,7 @@ trait EditResource
      * @param  int  $id
      * @return Array
      */
-    public function editResponse($id)
+    private function editResponse($id)
     {
         return [
             Str::singular($this->moduleName) => $this->editModelQueryResponse($id)
@@ -43,7 +43,7 @@ trait EditResource
      * @param  int  $id
      * @return Illuminate\Database\Eloquent\Model
      */
-    public function editModelQueryResponse($id){
+    private function editModelQueryResponse($id){
         return $this->eloquentModel::find($id);
     }
 
@@ -53,7 +53,7 @@ trait EditResource
      * @param  int  $id
      * @return boolean
      */
-    public function checkEditModelRequest($id) {
+    private function checkEditModelRequest($id) {
         return $this->eloquentModel::find($id) == null;
     }
 }

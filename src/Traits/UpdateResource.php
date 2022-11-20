@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 
 trait UpdateResource
 {
+    use Common\PropertiesResource;
+
     /**
      * Update the specified resource in storage.
      *
@@ -14,13 +16,15 @@ trait UpdateResource
      */
     public function update(Request $request, $id)
     {
-        if($this->checkDestroyModelRequest($id)) return abort(404);
+        if($this->checkUpdateModelRequest($id)) return abort(404);
 
         $resource = $this->eloquentModel::find($id);
-        $data = $request->only($this->resourceFields);
+        $fields = app($this->eloquentModel)->getFillable();
+        $data = $request->only($fields);
 
         if( $this->updateResource($resource, $this->removeNulls($data), $request) ){
-            if(request()->expectsJson()) return response()->json(['message' => 'Resoruce updated']);
+            if(request()->expectsJson() || $this->onlyJsonResponse) 
+                return response()->json($this->updateResponse($request, $id));
             return $this->redirectOnUpdate($request);
         }
 
@@ -31,7 +35,7 @@ trait UpdateResource
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function redirectOnUpdate(Request $request){
+    private function redirectOnUpdate(Request $request){
         return redirect()->to( $this->redirectTo );
     }
 
@@ -41,7 +45,7 @@ trait UpdateResource
      * @param  \Illuminate\Http\Request  $request
      * @return Boolean
      */
-    public function updateResource($resource, $data, Request $request){
+    private function updateResource($resource, $data, Request $request){
         return $resource->update($data);
     }
     
@@ -61,7 +65,7 @@ trait UpdateResource
      * @param  int  $id
      * @return Illuminate\Database\Eloquent\Model
      */
-    public function updateModelQuery($id){
+    private function updateModelQuery($id){
         return $this->eloquentModel::find($id);
     }
 
@@ -71,7 +75,17 @@ trait UpdateResource
      * @param  int  $id
      * @return boolean
      */
-    public function checkUpdateModelRequest($id) {
+    private function checkUpdateModelRequest($id) {
         return $this->eloquentModel::find($id) == null;
+    }
+
+    /**
+     * Response to update method
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return Illuminate\Database\Eloquent\Model
+     */
+    private function updateResponse(Request $request, $id) {
+        return $this->eloquentModel::find($id);
     }
 }

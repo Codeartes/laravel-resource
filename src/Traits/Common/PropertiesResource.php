@@ -8,7 +8,7 @@ trait PropertiesResource
 
     protected $eloquentModel = null;
 
-    protected $resourceFields = [];
-
     protected $redirectTo = '/';
+
+    protected $onlyJsonResponse = false;
 }

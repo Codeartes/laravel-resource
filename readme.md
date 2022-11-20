@@ -17,9 +17,32 @@ class TestController extends Controller
 
     public function __construct(){
         $this->moduleName = 'users';
-        $this->eloquentModel = \App\Models\User::class;
-        $this->resourceFields = ['name', 'email', 'password'];
-        $this->redirectTo = '/users';
+        $this->eloquentModel = \App\Models\User::class
+        // $this->onlyJsonResponse = true;
+        $this->redirectTo = '/users'; // optional if onlyJsonResponse is enabled
     }
 }
+```
+
+## Custom Request
+
+```
+class UserController extends Controller
+{
+    use FullResource {
+        create as protected createResource;
+        // update as protected updateResource;
+        // destroy as protected destroyResource;
+    }
+
+    public function __construct(){
+        // ...
+    }
+
+    public function create(CustomRequest $request){
+        // ... Code
+        return $this->createResource($request);
+    }
+}
+
 ```

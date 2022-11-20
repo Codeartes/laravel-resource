@@ -18,7 +18,8 @@ trait ShowResource
     {   
         if( $this->checkShowModelRequest($id) ) return abort(404, "Resource not found");
 
-        if(request()->expectsJson()) return response()->json($this->showModelQueryResponse($id));
+        if(request()->expectsJson() || $this->onlyJsonResponse) 
+            return response()->json($this->showModelQueryResponse($id));
 
         return $this->renderView(
             $this->moduleName != null ? Str::plural($this->moduleName) . '.show' : 'show' ,

@@ -1,6 +1,7 @@
 {
     "name": "imfranq/laravel-resource",
     "description": "Create easy cruds in Laravel PHP Framework.",
+    "version": "2.0.0",
     "authors": [
         {
             "name": "Franklin Gil",

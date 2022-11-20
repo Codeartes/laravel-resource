@@ -26,7 +26,7 @@ trait CreateResource
      * 
      * @return Array
      */
-    public function createResponse()
+    private function createResponse()
     {
         return [];
     }

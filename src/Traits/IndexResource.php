@@ -15,7 +15,8 @@ trait IndexResource
      */
     public function index()
     {   
-        if(request()->expectsJson()) return response()->json($this->indexModelQueryResponse());
+        if(request()->expectsJson() || $this->onlyJsonResponse) 
+            return response()->json($this->indexModelQueryResponse());
 
         return $this->renderView(
             $this->moduleName != null ? Str::plural($this->moduleName) . '.index' : 'index' ,
@@ -28,7 +29,7 @@ trait IndexResource
      * 
      * @return Array
      */
-    public function indexResponse()
+    private function indexResponse()
     {
         $data = [];
         
@@ -43,7 +44,7 @@ trait IndexResource
      * 
      * @return Illuminate\Database\Eloquent\Model
      */
-    public function indexModelQueryResponse(){
+    private function indexModelQueryResponse(){
         return $this->eloquentModel::get();
     }
 }
